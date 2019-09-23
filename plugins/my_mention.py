@@ -11,4 +11,11 @@ def reply_to_thread(message):
 @respond_to('count')
 def count_up_reaction(message):
     response = subMethod.get_message(message.thread_ts)
-    print(response['messages'][0])
+    data = response['messages'][0]['reactions']
+    sentence = ""
+    for datum in data:
+        sentence = sentence + ":" + datum['name'] + ":" + " "
+        for user in datum['users']:
+            sentence = sentence + "<@" + user + "> "
+        sentence = sentence + "\n"
+    message.send(sentence, thread_ts=message.thread_ts)
