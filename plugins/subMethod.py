@@ -5,7 +5,7 @@ client = slack.WebClient(token=client_token)
 
 def get_message(channel_id, thread_ts):
     response = client.channels_replies(
-            channel = str(channel_id),
+            channel = channel_id,
             thread_ts=thread_ts
             )
     return response
