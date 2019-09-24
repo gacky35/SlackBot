@@ -13,8 +13,9 @@ def count_up_reaction(message):
     response = subMethod.get_message(message.body['channel'], 
                                     message.thread_ts)
     data = response['messages'][0]['reactions']
-    sentence = ""
-    for datum in data:
+    sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
+    sentence = response['messages'][0]['text'] + '\n\nresult\n'
+    for datum in sorted_data:
         sentence = sentence + ":" + datum['name'] + ":" + " "
         for user in datum['users']:
             sentence = sentence + "<@" + user + "> "
