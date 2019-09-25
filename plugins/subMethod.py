@@ -1,4 +1,5 @@
 import slack
+import pickle
 
 client_token = 'xoxp-761305137745-754949468914-767736312661-9f26e5c1e6c2282046548a21e303299e'
 client = slack.WebClient(token=client_token)
@@ -12,3 +13,11 @@ def get_message(channel_id, thread_ts):
 
 def get_member():
     return client.users_list()
+
+def get_usergroup_list():
+    f = open("./plugins/usergroup_list.txt", "rb")
+    return pickle.load(f)
+
+def set_usergroup_list(usergroup_list):
+    f = open("./plugins/usergroup_list.txt", "wb")
+    pickle.dump(usergroup_list, f)
