@@ -3,7 +3,7 @@ from slackbot.bot import listen_to
 from slackbot.bot import default_reply
 from . import subMethod
 
-usergroup = []
+usergroup = subMethod.get_usergroup_list()
 
 @respond_to('@[a-zA-Z0-9]+\s([\s\S]*)')
 def reply_to_thread(message, text):
@@ -15,7 +15,7 @@ def reply_to_thread(message, text):
     sentence = ""
     for member in mention_dict['member']:
         sentence = sentence + "<@" + member + "> "
-    sentence = sentence + "\n" + text
+    sentence = sentence + "\n"
     message.send(sentence, 
             thread_ts=message.thread_ts)
 
@@ -46,4 +46,5 @@ def create_usergroup(message, usergroup_name, member):
                 member_id.append(ml['id'])
     data['member'] = member_id
     usergroup.append(data)
+    subMethod.set_usergroup_list(usergroup)
     message.send('OK')
