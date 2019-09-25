@@ -9,3 +9,6 @@ def get_message(channel_id, thread_ts):
             thread_ts=thread_ts
             )
     return response
+
+def get_member():
+    return client.users_list()
