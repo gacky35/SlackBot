@@ -81,3 +81,24 @@ def delete_usergroup(message, usergroup_name):
         new_usergroup.append(usergroup_dict)
     subMethod.set_usergroup_list(new_usergroup)
     message.send('OK. deleted usergroup')
+
+@respond_to('list')
+def show_usergroup_list(message):
+    usergroup = subMethod.get_usergroup_list()
+    sentence = ""
+    for usergroup_dict in usergroup:
+        sentence = sentence + usergroup_dict['usergroup_name'] + "\n"
+    message.send(sentence)
+
+@respond_to('show\s([a-zA-Z0-9]*)')
+def show_usergroup_member(message, usergroup_name):
+    usergroup = subMethod.get_usergroup_list()
+    user_list = subMethod.get_member()['members']
+    sentence = usergroup_name + "\n"
+    for usergroup_dict in usergroup:
+        if usergroup_dict['usergroup_name'] == usergroup_name:
+            members = subMethod.userid_to_username(user_list, usergroup_dict['member'])
+            for member in members:
+                sentence = sentence + member + "\n"
+            break
+    message.send(sentence)
