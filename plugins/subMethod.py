@@ -30,3 +30,10 @@ def username_to_userid(member_list, member_name):
                 member_id.append(ml['id'])
     return member_id
 
+def userid_to_username(member_list, member_id):
+    member_name = []
+    for ml in member_list:
+        for mi in member_id:
+            if ml['id'] == mi:
+                member_name.append(ml['name'])
+    return member_name
