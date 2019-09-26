@@ -21,3 +21,12 @@ def get_usergroup_list():
 def set_usergroup_list(usergroup_list):
     f = open("./plugins/usergroup_list.txt", "wb")
     pickle.dump(usergroup_list, f)
+
+def username_to_userid(member_list, member_name):
+    member_id = []
+    for ml in member_list:
+        for mn in member_name:
+            if ml['name'] == mn or ml['real_name'] == mn:
+                member_id.append(ml['id'])
+    return member_id
+
