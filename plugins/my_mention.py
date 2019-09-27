@@ -112,3 +112,17 @@ def show_usergroup_member(message, usergroup_name):
                 sentence = sentence + member + "\n"
             break
     message.send(sentence)
+
+@respond_to('help')
+def show_help_message(message):
+    message.send('You can use these commands.\n'\
+                'You have to mention to @starbot for use these commands.\n'\
+                '>>> `create [usergroup_name] [member,member,...]` : create new usergroup.\n'\
+                '`add [usergroup_name] [member,member,...]` : add member to exist usergroup.\n'\
+                '`delete [usergroup_name] [member,member,...]` : remove member from usergroup.\n'\
+                '`delete_usergroup [usergroup_name]` : delete a specified usergroup.\n'\
+                '`rename [usergroup_name] [new_usergroup_name]` : change usergroup_name.\n'\
+                '`list` : show all usergroup.\n'\
+                '`show [usergroup_name]` : show members belonging to a specified usergroup.\n'\
+                '`count` : send questionnare\'s result to your DM. this command can only be used on threads. \n')
+    
