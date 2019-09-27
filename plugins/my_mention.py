@@ -82,6 +82,16 @@ def delete_usergroup(message, usergroup_name):
     subMethod.set_usergroup_list(new_usergroup)
     message.send('OK. deleted usergroup')
 
+@respond_to('rename\s([a-zA-Z0-9]*)\s([a-zA-Z0-9]*)')
+def rename_usergroup(message, usergroup_name, new_usergroup_name):
+    usergroups = subMethod.get_usergroup_list()
+    for usergroup in usergroups:
+        if usergroup['usergroup_name'] == usergroup_name:
+            usergroup['usergroup_name'] = new_usergroup_name
+            break
+    subMethod.set_usergroup_list(usergroups)
+    message.send('OK. rename usergroup')
+
 @respond_to('list')
 def show_usergroup_list(message):
     usergroup = subMethod.get_usergroup_list()
