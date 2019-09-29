@@ -36,6 +36,10 @@ def count_up_reaction(message):
 def create_usergroup(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     member_list = subMethod.get_member()['members']
+    for usergroup_dict in usergroup:
+        if usergroup_dict['usergroup_name'] == usergroup_name:
+            message.send(usergroup_name+' is already exist.')
+            return
     data = {}
     data['usergroup_name'] = usergroup_name
     member_name = member.split(',')
@@ -74,6 +78,10 @@ def delete_member(message, usergroup_name, member):
 @respond_to('delete_usergroup\s([a-zA-Z0-9]*)')
 def delete_usergroup(message, usergroup_name):
     usergroup = subMethod.get_usergroup_list()
+    usergroup_name_list = [x['usergroup_name'] for x in usergroup]
+    if usergroup_name not in usergroup_name_list:
+        message.send(usergroup_name + ' is not exist.')
+        return
     new_usergroup = []
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
@@ -85,6 +93,10 @@ def delete_usergroup(message, usergroup_name):
 @respond_to('rename\s([a-zA-Z0-9]*)\s([a-zA-Z0-9]*)')
 def rename_usergroup(message, usergroup_name, new_usergroup_name):
     usergroups = subMethod.get_usergroup_list()
+    usergroup_name_list = [x['usergroup_name'] for x in usergroups]
+    if usergroup_name not in usergroup_name_list:
+        message.send(usergroup_name + ' is not exist.')
+        return
     for usergroup in usergroups:
         if usergroup['usergroup_name'] == usergroup_name:
             usergroup['usergroup_name'] = new_usergroup_name
@@ -104,10 +116,11 @@ def show_usergroup_list(message):
 def show_usergroup_member(message, usergroup_name):
     usergroup = subMethod.get_usergroup_list()
     user_list = subMethod.get_member()['members']
-    sentence = usergroup_name + "\n"
+    sentence = usergroup_name + " has not created."
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
             members = subMethod.userid_to_username(user_list, usergroup_dict['member'])
+            sentence = usergroup_name + "\n"
             for member in members:
                 sentence = sentence + member + "\n"
             break

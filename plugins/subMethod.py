@@ -24,10 +24,11 @@ def set_usergroup_list(usergroup_list):
 
 def username_to_userid(member_list, member_name):
     member_id = []
-    for ml in member_list:
-        for mn in member_name:
+    for mn in member_name:
+        for ml in member_list:
             if ml['name'] == mn or ml['real_name'] == mn:
                 member_id.append(ml['id'])
+                continue
     return member_id
 
 def userid_to_username(member_list, member_id):
