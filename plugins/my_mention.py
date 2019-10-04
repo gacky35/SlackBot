@@ -6,7 +6,8 @@ from . import subMethod
 @listen_to('@[a-zA-Z0-9]+\s([\s\S]*)')
 def reply_to_thread(message, text):
     usergroup = subMethod.get_usergroup_list()
-    mention = message.body['text'].split(' ')[0].strip('@')
+    message.body['text'].replace('\n', ' ')
+    mention = message.body['text'].split()[0].strip('@')
     for dictionary in usergroup:
         if dictionary['usergroup_name'] == mention:
             mention_dict = dictionary
