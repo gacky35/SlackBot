@@ -44,7 +44,15 @@ def create_usergroup(message, usergroup_name, member):
     data = {}
     data['usergroup_name'] = usergroup_name
     member_name = member.split(',')
-    data['member'] = subMethod.username_to_userid(member_list, member_name)
+    member_id = []
+    for mn in member_name:
+        for ml in member_list:
+            if ml['name'] == mn or ml['real_name'] == mn:
+                member_id.append(ml['id'])
+                continue
+        message.send(mn + " is not in this channel")
+    data['member'] = member_id
+#    data['member'] = subMethod.username_to_userid(member_list, member_name)
     usergroup.append(data)
     subMethod.set_usergroup_list(usergroup)
     message.send('OK')
@@ -52,9 +60,27 @@ def create_usergroup(message, usergroup_name, member):
 @respond_to('add\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
 def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
+    usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
+    if usergroup_name not in usergroup_name_list:
+        message.send(usergroup_name + " is not exist")
+        return
     member_list = subMethod.get_member()['members']
     member_name = member.split(',')
-    member_id = subMethod.username_to_userid(member_list, member_name)
+    member_id = []
+    ml_id = [ml['id'] for ml in member_list]
+    ml_name = [ml['name'] for ml in member_list]
+    ml_rname = [ml['real_name'] for ml in member_list]
+    for mn in member_name:
+        if mn in ml_name:
+            member_id.append(ml_id[ml_name.index(mn)])
+        elif mn in ml_rname:
+            member_id.append(ml_id[ml_rname.index(mn)])
+        else:
+            message.send(mn + " is not in this channel")
+    #member_id = subMethod.username_to_userid(member_list, member_name)
+    if len(member_id) == 0:
+        message.send("No one will add")
+        return
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
             usergroup_dict['member'].extend(member_id)
