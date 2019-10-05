@@ -14,6 +14,16 @@ def get_message(channel_id, thread_ts):
 def get_member():
     return client.users_list()
 
+def get_usergroup_member(usergroup_name):
+    usergroup_list = get_usergroup_list()
+    member = []
+    for ml in usergroup_list:
+        if ml['usergroup_name'] == usergroup_name:
+            for m in ml['member']:
+                member.append(client.users_info(user=m)['user']['name'])
+                member.append(client.users_info(user=m)['user']['real_name'])
+    return member
+
 def get_usergroup_list():
     f = open("./plugins/usergroup_list.txt", "rb")
     return pickle.load(f)
