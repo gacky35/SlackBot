@@ -33,6 +33,23 @@ def count_up_reaction(message):
         sentence = sentence + "\n"
     message.direct_reply(sentence)
 
+@respond_to('diff')
+def check_reactor(message):
+    response = subMethod.get_message(message.body['channel'],
+                                    message.thread_ts)
+    target_usergroup = response['messages'][0]['text'].replace('\n', ' ').split()[0].strip('@')
+    all_target_audience = subMethod.get_usergroup_member_id(target_usergroup)
+    data = response['messages'][0]['reactions']
+    reacted_users = []
+    reacted_users.extend([user for datum in data for user in datum['users']])
+    target_audience = []
+    target_audience.extend([user for user in all_target_audience if user not in reacted_users])
+    sentence = "Hasn't yet reacted\n"
+    for user in target_audience:
+        sentence = sentence + "<@" + user + ">\n"
+    message.direct_reply(sentence)
+
+
 @respond_to('create\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
 def create_usergroup(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
