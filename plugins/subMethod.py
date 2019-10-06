@@ -24,6 +24,15 @@ def get_usergroup_member(usergroup_name):
                 member.append(client.users_info(user=m)['user']['real_name'])
     return member
 
+def get_usergroup_member_id(usergroup_name):
+    usergroup_list = get_usergroup_list()
+    member_id = []
+    for ml in usergroup_list:
+        if ml['usergroup_name'] == usergroup_name:
+            member_id.extend(ml['member'])
+            break
+    return member_id
+
 def get_usergroup_list():
     f = open("./plugins/usergroup_list.txt", "rb")
     return pickle.load(f)
