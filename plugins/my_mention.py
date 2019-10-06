@@ -8,10 +8,14 @@ def reply_to_thread(message, text):
     usergroup = subMethod.get_usergroup_list()
     message.body['text'].replace('\n', ' ')
     mention = message.body['text'].split()[0].strip('@')
+    mention_dict = []
     for dictionary in usergroup:
         if dictionary['usergroup_name'] == mention:
             mention_dict = dictionary
             break
+    if len(mention_dict) == 0:
+        message.send(mention + ' is not exist')
+        return
     sentence = ""
     for member in mention_dict['member']:
         sentence = sentence + "<@" + member + "> "
