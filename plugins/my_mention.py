@@ -29,7 +29,7 @@ def count_up_reaction(message):
                                     message.thread_ts)
     data = response['messages'][0]['reactions']
     sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
-    sentence = response['messages'][0]['text'] + '\n\nresult\n'
+    sentence = response['messages'][0]['text'] + '\n\n*Result*\n'
     for datum in sorted_data:
         sentence = sentence + ":" + datum['name'] + ":" + " "
         for user in datum['users']:
@@ -48,7 +48,7 @@ def check_reactor(message):
     reacted_users.extend([user for datum in data for user in datum['users']])
     target_audience = []
     target_audience.extend([user for user in all_target_audience if user not in reacted_users])
-    sentence = "Hasn't yet reacted\n"
+    sentence = "*Hasn't yet reacted*\n"
     for user in target_audience:
         sentence = sentence + "<@" + user + ">\n"
     message.direct_reply(sentence)
@@ -60,7 +60,7 @@ def create_usergroup(message, usergroup_name, member):
     member_list = subMethod.get_member()['members']
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
-            message.send(usergroup_name+' is already exist.')
+            message.send("`" + usergroup_name+' is already exist.`\n> please choose another name.')
             return
     data = {}
     data['usergroup_name'] = usergroup_name
@@ -71,7 +71,7 @@ def create_usergroup(message, usergroup_name, member):
             if ml['name'] == mn or ml['real_name'] == mn:
                 member_id.append(ml['id'])
                 continue
-        message.send(mn + " is not in this channel")
+        message.send("`" + mn + " is not in this channel`")
     data['member'] = member_id
 #    data['member'] = subMethod.username_to_userid(member_list, member_name)
     usergroup.append(data)
@@ -83,7 +83,7 @@ def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
     if usergroup_name not in usergroup_name_list:
-        message.send(usergroup_name + " is not exist")
+        message.send("`" + usergroup_name + " is not exist`\n> please type `@starbot list` and check usergroup_name.")
         return
     member_list = subMethod.get_member()['members']
     usergroup_member = subMethod.get_usergroup_member(usergroup_name)
@@ -174,7 +174,7 @@ def rename_usergroup(message, usergroup_name, new_usergroup_name):
         message.send(usergroup_name + ' is not exist.')
         return
     if new_usergroup_name in usergroup_name_list:
-        message.send(new_usergroup_name + ' is exist. so please send another name')
+        message.send("`" + new_usergroup_name + ' is exist.`\n> please choose another name')
         return
     for usergroup in usergroups:
         if usergroup['usergroup_name'] == usergroup_name:
@@ -186,7 +186,7 @@ def rename_usergroup(message, usergroup_name, new_usergroup_name):
 @respond_to('list')
 def show_usergroup_list(message):
     usergroup = subMethod.get_usergroup_list()
-    sentence = ""
+    sentence = "*List of Resisted Usergroup*\n>>>"
     for usergroup_dict in usergroup:
         sentence = sentence + usergroup_dict['usergroup_name'] + "\n"
     message.send(sentence)
@@ -195,11 +195,11 @@ def show_usergroup_list(message):
 def show_usergroup_member(message, usergroup_name):
     usergroup = subMethod.get_usergroup_list()
     user_list = subMethod.get_member()['members']
-    sentence = usergroup_name + " has not created."
+    sentence = "`" + usergroup_name + " has not created.`\n> please type `@starbot list` and check usergroup_name."
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
             members = subMethod.userid_to_username(user_list, usergroup_dict['member'])
-            sentence = usergroup_name + "\n"
+            sentence = "Member of *" + usergroup_name + "*\n>>>"
             for member in members:
                 sentence = sentence + member + "\n"
             break
