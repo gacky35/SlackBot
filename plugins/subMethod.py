@@ -1,7 +1,7 @@
 import slack
 import pickle
 
-with open('./client_token.txt') as f:
+with open('./plugins/client_token.txt') as f:
     client_token = f.read().strip()
 
 client = slack.WebClient(token=client_token)
