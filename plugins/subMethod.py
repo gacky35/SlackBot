@@ -1,7 +1,9 @@
 import slack
 import pickle
 
-client_token = 'xoxp-761305137745-754949468914-767736312661-9f26e5c1e6c2282046548a21e303299e'
+with open('./client_token.txt') as f:
+    client_token = f.read().strip()
+
 client = slack.WebClient(token=client_token)
 
 def get_message(channel_id, thread_ts):

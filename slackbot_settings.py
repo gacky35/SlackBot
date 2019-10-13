@@ -1,4 +1,5 @@
-API_TOKEN = "xoxb-761305137745-769593783959-ncBsyBIWbSmaYcqrUdHuXnwc"
+with open('./access_token.txt') as f:
+    API_TOKEN = f.read().strip()
 
 DEFAULT_REPLY = "Can't do that! Please try `@starbot help`"
 
