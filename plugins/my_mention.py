@@ -73,7 +73,6 @@ def create_usergroup(message, usergroup_name, member):
                 continue
         message.send("`" + mn + " is not in this channel`")
     data['member'] = member_id
-#    data['member'] = subMethod.username_to_userid(member_list, member_name)
     usergroup.append(data)
     subMethod.set_usergroup_list(usergroup)
     message.send('Created a usergroup')
@@ -105,7 +104,6 @@ def add_member(message, usergroup_name, member):
             member_id.append(ml_id[ml_rname.index(mn)])
         else:
             message.send("`" + mn + " is not in this channel`")
-    #member_id = subMethod.username_to_userid(member_list, member_name)
     if len(member_id) == 0:
         message.send("`No one will add`")
         return
@@ -125,7 +123,6 @@ def delete_member(message, usergroup_name, member):
         return
     member_list = subMethod.get_member()['members']
     member_name = member.split(',')
-    #member_id = subMethod.username_to_userid(member_list, member_name)
     member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
@@ -208,7 +205,7 @@ def show_usergroup_member(message, usergroup_name):
 @respond_to('help')
 def show_help_message(message):
     message.send('You can use these commands.\n'\
-                'You have to mention to @starbot for use these commands.\n'\
+                'You have to mention to *@starbot* for use these commands.\n'\
                 '>>> `create [usergroup_name] [member,member,...]` : create new usergroup.\n'\
                 '`add [usergroup_name] [member,member,...]` : add member to exist usergroup.\n'\
                 '`delete [usergroup_name] [member,member,...]` : remove member from usergroup.\n'\
