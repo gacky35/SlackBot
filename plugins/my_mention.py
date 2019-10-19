@@ -66,12 +66,16 @@ def create_usergroup(message, usergroup_name, member):
     data['usergroup_name'] = usergroup_name
     member_name = member.split(',')
     member_id = []
+    ml_id = [ml['id'] for ml in member_list]
+    ml_name = [ml['name'] for ml in member_list]
+    ml_rname = [ml['real_name'] for ml in member_list]
     for mn in member_name:
-        for ml in member_list:
-            if ml['name'] == mn or ml['real_name'] == mn:
-                member_id.append(ml['id'])
-                continue
-        message.send("`" + mn + " is not in this channel`")
+        if mn in ml_name:
+            member_id.append(ml_id[ml_name.index(mn)])
+        elif mn in ml_rname:
+            member_id.append(ml_id[ml_rname.index(mn)])
+        else:
+            message.send("`" + mn + " is not in this workspace`")
     data['member'] = member_id
     usergroup.append(data)
     subMethod.set_usergroup_list(usergroup)
