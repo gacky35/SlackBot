@@ -24,5 +24,5 @@ And, you need these library to use this bot. <br>
 Finally, regist app token on the files. <br>
 ```
 $ echo {Bot User OAuth Access Token} >> access_token.txt
-$ echo {OAuth Access Token} >> plugin/client_token.txt
+$ echo {OAuth Access Token} >> plugins/client_token.txt
 ```
