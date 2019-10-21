@@ -57,5 +57,5 @@ def userid_to_username(member_list, member_id):
     for ml in member_list:
         for mi in member_id:
             if ml['id'] == mi:
-                member_name.append(ml['name'])
+                member_name.append(ml['profile']['display_name'])
     return member_name
