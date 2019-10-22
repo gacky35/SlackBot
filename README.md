@@ -1,4 +1,4 @@
-# SlackBot
+# slackbot
 
 Slackでのユーザグループの利用をサポートするbot <br>
 This is a Slackbot which support using usergroup.
