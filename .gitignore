@@ -1,4 +1,5 @@
-__pycache__/
-plugins/__pycache__/
-plugins/usergroup_list.txt
-*.txt
+app/access_token.txt
+app/*.pyc
+app/plugins/client_token.txt
+app/plugins/*.pyc
+data/usergroup_list.txt
