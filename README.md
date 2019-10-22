@@ -30,5 +30,5 @@ $ echo {OAuth Access Token} >> app/plugins/client_token.txt
 以下のコマンドで実行できます． <br>
 You can run this program with this command. <br>
 ```
-$ 
+$ bash run.sh
 ```
