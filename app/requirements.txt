@@ -1,0 +1,2 @@
+slackbot==0.5.4
+slackclient==2.1.0
