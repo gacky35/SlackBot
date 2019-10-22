@@ -1,0 +1,4 @@
+__pycache__/
+plugins/__pycache__/
+plugins/usergroup_list.txt
+*.txt
