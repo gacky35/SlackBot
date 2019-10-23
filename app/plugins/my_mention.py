@@ -103,12 +103,15 @@ def add_member(message, usergroup_name, member):
     member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
-    ml_rname = [ml['real_name'] for ml in member_list]
+    ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
+    ml_dname = [ml['profile']['display_name'] for ml in member_list]
     for mn in add_member_name:
         if mn in ml_name:
             member_id.append(ml_id[ml_name.index(mn)])
         elif mn in ml_rname:
             member_id.append(ml_id[ml_rname.index(mn)])
+        elif mn in ml_dname:
+            member_id.append(ml_id[ml_dname.index(mn)])
         else:
             message.send("`" + mn + " is not in this channel`")
     if len(member_id) == 0:
@@ -133,12 +136,15 @@ def delete_member(message, usergroup_name, member):
     member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
-    ml_rname = [ml['real_name'] for ml in member_list]
+    ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
+    ml_dname = [ml['profile']['display_name'] for ml in member_list]
     for mn in member_name:
         if mn in ml_name:
             member_id.append(ml_id[ml_name.index(mn)])
         elif mn in ml_rname:
             member_id.append(ml_id[ml_rname.index(mn)])
+        elif mn in ml_dname:
+            member_id.append(ml_id[ml_dname.index(mn)])
         else:
             message.send("`" + mn + " is not in this channel`")
     if len(member_id) == 0:
