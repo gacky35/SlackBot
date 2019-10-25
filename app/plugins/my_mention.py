@@ -27,14 +27,21 @@ def reply_to_thread(message, text):
 def count_up_reaction(message):
     response = subMethod.get_message(message.body['channel'], 
                                     message.thread_ts)
-    data = response['messages'][0]['reactions']
-    sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
-    sentence = response['messages'][0]['text'] + '\n\n*Result*\n'
-    for datum in sorted_data:
-        sentence = sentence + ":" + datum['name'] + ":" + " "
-        for user in datum['users']:
-            sentence = sentence + "<@" + user + "> "
-        sentence = sentence + "\n"
+    if not response:
+        message.direct_reply("Can't use count method in DM")
+        return
+    sentence = ''
+    if 'reactions' in response['messages'][0]:
+        data = response['messages'][0]['reactions']
+        sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
+        sentence = response['messages'][0]['text'] + '\n\n*Result*\n'
+        for datum in sorted_data:
+            sentence = sentence + ":" + datum['name'] + ":" + " "
+            for user in datum['users']:
+                sentence = sentence + "<@" + user + "> "
+            sentence = sentence + "\n"
+    else:
+        sentence = 'No reactions'
     message.direct_reply(sentence)
 
 @respond_to('diff')
