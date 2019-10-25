@@ -8,10 +8,13 @@ with open('./plugins/client_token.txt') as f:
 client = slack.WebClient(token=client_token)
 
 def get_message(channel_id, thread_ts):
-    response = client.channels_replies(
-            channel = channel_id,
-            thread_ts=thread_ts
-            )
+    try:
+        response = client.channels_replies(
+                channel = channel_id,
+                thread_ts=thread_ts
+                )
+    except:
+        response = False
     return response
 
 def get_member():
