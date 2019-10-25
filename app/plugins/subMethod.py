@@ -42,7 +42,10 @@ def get_usergroup_member_id(usergroup_name):
 def get_usergroup_list():
     os.chdir('/data')
     f = open("./usergroup_list.txt", "rb")
-    return pickle.load(f)
+    try:
+        return pickle.load(f)
+    except EOFError:
+        return {}
 
 def set_usergroup_list(usergroup_list):
     os.chdir('/data')
