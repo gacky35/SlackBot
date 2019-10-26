@@ -45,7 +45,7 @@ def get_usergroup_list():
     try:
         return pickle.load(f)
     except EOFError:
-        return {}
+        return []
 
 def set_usergroup_list(usergroup_list):
     os.chdir('/data')

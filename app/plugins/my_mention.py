@@ -48,9 +48,14 @@ def count_up_reaction(message):
 def check_reactor(message):
     response = subMethod.get_message(message.body['channel'],
                                     message.thread_ts)
+    if not response:
+        message.direct_reply("Can't use count method in DM")
+        return
     target_usergroup = response['messages'][0]['text'].replace('\n', ' ').split()[0].strip('@')
     all_target_audience = subMethod.get_usergroup_member_id(target_usergroup)
-    if 'reactions' in response['messages'][0]
+    if len(all_target_audience) == 0:
+        sentence = 'No specified user group'
+    elif 'reactions' in response['messages'][0]:
         data = response['messages'][0]['reactions']
         reacted_users = []
         reacted_users.extend([user for datum in data for user in datum['users']])
@@ -60,7 +65,9 @@ def check_reactor(message):
         for user in target_audience:
             sentence = sentence + "<@" + user + ">\n"
     else:
-        sentence = "No one haven't reacted"
+        sentence = "*Hasn't yet reacted*\n"
+        for user in all_target_audience:
+            sentence = sentence + "<@" + user + ">\n"
     message.direct_reply(sentence)
 
 
