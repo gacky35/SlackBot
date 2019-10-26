@@ -50,14 +50,17 @@ def check_reactor(message):
                                     message.thread_ts)
     target_usergroup = response['messages'][0]['text'].replace('\n', ' ').split()[0].strip('@')
     all_target_audience = subMethod.get_usergroup_member_id(target_usergroup)
-    data = response['messages'][0]['reactions']
-    reacted_users = []
-    reacted_users.extend([user for datum in data for user in datum['users']])
-    target_audience = []
-    target_audience.extend([user for user in all_target_audience if user not in reacted_users])
-    sentence = "*Hasn't yet reacted*\n"
-    for user in target_audience:
-        sentence = sentence + "<@" + user + ">\n"
+    if 'reactions' in response['messages'][0]
+        data = response['messages'][0]['reactions']
+        reacted_users = []
+        reacted_users.extend([user for datum in data for user in datum['users']])
+        target_audience = []
+        target_audience.extend([user for user in all_target_audience if user not in reacted_users])
+        sentence = "*Hasn't yet reacted*\n"
+        for user in target_audience:
+            sentence = sentence + "<@" + user + ">\n"
+    else:
+        sentence = "No one haven't reacted"
     message.direct_reply(sentence)
 
 
