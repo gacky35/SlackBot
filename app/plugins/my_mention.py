@@ -80,9 +80,13 @@ def create_usergroup(message, usergroup_name, member):
             message.send("`" + usergroup_name+' is already exist.`\n> please choose another name.')
             return
     data = {}
-    data['usergroup_name'] = usergroup_name
-    member_name = member.split(',')
     member_id = []
+    data['usergroup_name'] = usergroup_name
+    try:
+        member_name = member.split(',')
+    except AttributeError:
+        member_name = []
+        member_id = member
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
@@ -101,6 +105,19 @@ def create_usergroup(message, usergroup_name, member):
     subMethod.set_usergroup_list(usergroup)
     message.send('Created a usergroup')
 
+@respond_to('merge\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+def merge_usergroup(message, usergroup_name, member):
+    usergroups = subMethod.get_usergroup_list()
+    merge_group_list = member.split(',')
+    merge_list = []
+    [merge_list.extend(usergroup['member']) for usergroup in usergroups if usergroup['usergroup_name'] in merge_group_list]
+    usergroups_name = [usergroup['usergroup_name'] for usergroup in usergroups]
+    if usergroup_name in usergroups_name:
+        add_member(message, usergroup_name, merge_list)
+    else:
+        create_usergroup(message, usergroup_name, merge_list)
+    
+
 @respond_to('add\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
 def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
@@ -110,14 +127,18 @@ def add_member(message, usergroup_name, member):
         return
     member_list = subMethod.get_member()['members']
     usergroup_member = subMethod.get_usergroup_member(usergroup_name)
-    member_name = member.split(',')
+    member_id = []
+    try:
+        member_name = member.split(',')
+    except AttributeError:
+        member_name = []
+        member_id = member
     add_member_name = []
     for mn in member_name:
         if mn not in usergroup_member:
             add_member_name.append(mn)
         else:
             message.send("`" + mn + ' already belongs`')
-    member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
@@ -137,6 +158,7 @@ def add_member(message, usergroup_name, member):
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
             usergroup_dict['member'].extend(member_id)
+            usergroup_dict['member'] = list(set(usergroup_dict['member']))
             break
     subMethod.set_usergroup_list(usergroup)
     message.send('Added some member')
