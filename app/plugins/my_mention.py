@@ -117,6 +117,13 @@ def merge_usergroup(message, usergroup_name, member):
     else:
         create_usergroup(message, usergroup_name, merge_list)
     
+@respond_to('prune\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+def prune_usergroup(message, usergroup_name, member):
+    usergroups = subMethod.get_usergroup_list()
+    prune_group_list = member.split(',')
+    prune_list = []
+    [prune_list.extend(usergroup['member']) for usergroup in usergroups if usergroup['usergroup_name'] in prune_group_list]
+    delete_member(message, usergroup_name, prune_list)
 
 @respond_to('add\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
 def add_member(message, usergroup_name, member):
@@ -171,8 +178,12 @@ def delete_member(message, usergroup_name, member):
         message.send("`" + usergroup_name + " is not exist`\n> type `@secretary list` and check usergroup_name")
         return
     member_list = subMethod.get_member()['members']
-    member_name = member.split(',')
     member_id = []
+    try:
+        member_name = member.split(',')
+    except AttributeError:
+        member_name = []
+        member_id = member
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
