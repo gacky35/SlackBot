@@ -1,4 +1,4 @@
-# SlackBot
+# slackbot
 
 Slackでのユーザグループの利用をサポートするbot <br>
 This is a Slackbot which support using usergroup.
@@ -23,6 +23,12 @@ And, you need these library to use this bot. <br>
 最後に，アプリのトークンをファイルに保存します． <br>
 Finally, regist app token on the files. <br>
 ```
-$ echo {Bot User OAuth Access Token} >> access_token.txt
-$ echo {OAuth Access Token} >> plugins/client_token.txt
+$ echo {Bot User OAuth Access Token} >> app/access_token.txt
+$ echo {OAuth Access Token} >> app/plugins/client_token.txt
+```
+
+以下のコマンドで実行できます． <br>
+You can run this program with this command. <br>
+```
+$ bash run.sh
 ```

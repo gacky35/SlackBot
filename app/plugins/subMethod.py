@@ -8,10 +8,13 @@ with open('./plugins/client_token.txt') as f:
 client = slack.WebClient(token=client_token)
 
 def get_message(channel_id, thread_ts):
-    response = client.channels_replies(
-            channel = channel_id,
-            thread_ts=thread_ts
-            )
+    try:
+        response = client.channels_replies(
+                channel = channel_id,
+                thread_ts=thread_ts
+                )
+    except:
+        response = False
     return response
 
 def get_member():
@@ -39,7 +42,10 @@ def get_usergroup_member_id(usergroup_name):
 def get_usergroup_list():
     os.chdir('/data')
     f = open("./usergroup_list.txt", "rb")
-    return pickle.load(f)
+    try:
+        return pickle.load(f)
+    except EOFError:
+        return []
 
 def set_usergroup_list(usergroup_list):
     os.chdir('/data')

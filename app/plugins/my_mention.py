@@ -27,30 +27,47 @@ def reply_to_thread(message, text):
 def count_up_reaction(message):
     response = subMethod.get_message(message.body['channel'], 
                                     message.thread_ts)
-    data = response['messages'][0]['reactions']
-    sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
-    sentence = response['messages'][0]['text'] + '\n\n*Result*\n'
-    for datum in sorted_data:
-        sentence = sentence + ":" + datum['name'] + ":" + " "
-        for user in datum['users']:
-            sentence = sentence + "<@" + user + "> "
-        sentence = sentence + "\n"
+    if not response:
+        message.direct_reply("Can't use count method in DM")
+        return
+    sentence = ''
+    if 'reactions' in response['messages'][0]:
+        data = response['messages'][0]['reactions']
+        sorted_data = sorted(data, reverse=True, key=lambda x:x['count'])
+        sentence = response['messages'][0]['text'] + '\n\n*Result*\n'
+        for datum in sorted_data:
+            sentence = sentence + ":" + datum['name'] + ":" + " "
+            for user in datum['users']:
+                sentence = sentence + "<@" + user + "> "
+            sentence = sentence + "\n"
+    else:
+        sentence = 'No reactions'
     message.direct_reply(sentence)
 
 @respond_to('diff')
 def check_reactor(message):
     response = subMethod.get_message(message.body['channel'],
                                     message.thread_ts)
+    if not response:
+        message.direct_reply("Can't use count method in DM")
+        return
     target_usergroup = response['messages'][0]['text'].replace('\n', ' ').split()[0].strip('@')
     all_target_audience = subMethod.get_usergroup_member_id(target_usergroup)
-    data = response['messages'][0]['reactions']
-    reacted_users = []
-    reacted_users.extend([user for datum in data for user in datum['users']])
-    target_audience = []
-    target_audience.extend([user for user in all_target_audience if user not in reacted_users])
-    sentence = "*Hasn't yet reacted*\n"
-    for user in target_audience:
-        sentence = sentence + "<@" + user + ">\n"
+    if len(all_target_audience) == 0:
+        sentence = 'No specified user group'
+    elif 'reactions' in response['messages'][0]:
+        data = response['messages'][0]['reactions']
+        reacted_users = []
+        reacted_users.extend([user for datum in data for user in datum['users']])
+        target_audience = []
+        target_audience.extend([user for user in all_target_audience if user not in reacted_users])
+        sentence = "*Hasn't yet reacted*\n"
+        for user in target_audience:
+            sentence = sentence + "<@" + user + ">\n"
+    else:
+        sentence = "*Hasn't yet reacted*\n"
+        for user in all_target_audience:
+            sentence = sentence + "<@" + user + ">\n"
     message.direct_reply(sentence)
 
 
@@ -63,9 +80,13 @@ def create_usergroup(message, usergroup_name, member):
             message.send("`" + usergroup_name+' is already exist.`\n> please choose another name.')
             return
     data = {}
-    data['usergroup_name'] = usergroup_name
-    member_name = [x.strip() for x in member.split(',')]
     member_id = []
+    data['usergroup_name'] = usergroup_name
+    try:
+        member_name = [x.strip() for x in member.split(',')]
+    except AttributeError:
+        member_name = []
+        member_id = member
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
@@ -84,6 +105,26 @@ def create_usergroup(message, usergroup_name, member):
     subMethod.set_usergroup_list(usergroup)
     message.send('Created a usergroup')
 
+@respond_to('merge\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+def merge_usergroup(message, usergroup_name, member):
+    usergroups = subMethod.get_usergroup_list()
+    merge_group_list = member.split(',')
+    merge_list = []
+    [merge_list.extend(usergroup['member']) for usergroup in usergroups if usergroup['usergroup_name'] in merge_group_list]
+    usergroups_name = [usergroup['usergroup_name'] for usergroup in usergroups]
+    if usergroup_name in usergroups_name:
+        add_member(message, usergroup_name, merge_list)
+    else:
+        create_usergroup(message, usergroup_name, merge_list)
+    
+@respond_to('prune\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+def prune_usergroup(message, usergroup_name, member):
+    usergroups = subMethod.get_usergroup_list()
+    prune_group_list = member.split(',')
+    prune_list = []
+    [prune_list.extend(usergroup['member']) for usergroup in usergroups if usergroup['usergroup_name'] in prune_group_list]
+    delete_member(message, usergroup_name, prune_list)
+
 @respond_to('add\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
@@ -93,14 +134,19 @@ def add_member(message, usergroup_name, member):
         return
     member_list = subMethod.get_member()['members']
     usergroup_member = subMethod.get_usergroup_member(usergroup_name)
-    member_name = [x.strip() for x in member.split(',')]
+
+    member_id = []
+    try:
+        member_name = [x.strip() for x in member.split(',')]
+    except AttributeError:
+        member_name = []
+        member_id = member
     add_member_name = []
     for mn in member_name:
         if mn not in usergroup_member:
             add_member_name.append(mn)
         else:
             message.send("`" + mn + ' already belongs`')
-    member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
@@ -120,6 +166,7 @@ def add_member(message, usergroup_name, member):
     for usergroup_dict in usergroup:
         if usergroup_dict['usergroup_name'] == usergroup_name:
             usergroup_dict['member'].extend(member_id)
+            usergroup_dict['member'] = list(set(usergroup_dict['member']))
             break
     subMethod.set_usergroup_list(usergroup)
     message.send('Added some member')
@@ -132,8 +179,12 @@ def delete_member(message, usergroup_name, member):
         message.send("`" + usergroup_name + " is not exist`\n> type `@secretary list` and check usergroup_name")
         return
     member_list = subMethod.get_member()['members']
-    member_name = [x.strip() for x in member.split(',')]
     member_id = []
+    try:
+        member_name = [x.strip() for x in member.split(',')]
+    except AttributeError:
+        member_name = []
+        member_id = member
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
     ml_rname = [ml['real_name'] if 'real_name' in ml else 'no_name' for ml in member_list]
