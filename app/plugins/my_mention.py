@@ -54,7 +54,7 @@ def check_reactor(message):
     message.direct_reply(sentence)
 
 
-@respond_to('create\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('create\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def create_usergroup(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     member_list = subMethod.get_member()['members']
@@ -64,7 +64,7 @@ def create_usergroup(message, usergroup_name, member):
             return
     data = {}
     data['usergroup_name'] = usergroup_name
-    member_name = member.split(',')
+    member_name = [x.strip() for x in member.split(',')]
     member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
@@ -84,7 +84,7 @@ def create_usergroup(message, usergroup_name, member):
     subMethod.set_usergroup_list(usergroup)
     message.send('Created a usergroup')
 
-@respond_to('add\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('add\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
@@ -93,7 +93,7 @@ def add_member(message, usergroup_name, member):
         return
     member_list = subMethod.get_member()['members']
     usergroup_member = subMethod.get_usergroup_member(usergroup_name)
-    member_name = member.split(',')
+    member_name = [x.strip() for x in member.split(',')]
     add_member_name = []
     for mn in member_name:
         if mn not in usergroup_member:
@@ -124,7 +124,7 @@ def add_member(message, usergroup_name, member):
     subMethod.set_usergroup_list(usergroup)
     message.send('Added some member')
 
-@respond_to('delete\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('delete\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def delete_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
@@ -132,7 +132,7 @@ def delete_member(message, usergroup_name, member):
         message.send("`" + usergroup_name + " is not exist`\n> type `@secretary list` and check usergroup_name")
         return
     member_list = subMethod.get_member()['members']
-    member_name = member.split(',')
+    member_name = [x.strip() for x in member.split(',')]
     member_id = []
     ml_id = [ml['id'] for ml in member_list]
     ml_name = [ml['name'] for ml in member_list]
