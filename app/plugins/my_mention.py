@@ -71,7 +71,7 @@ def check_reactor(message):
     message.direct_reply(sentence)
 
 
-@respond_to('create\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('create\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def create_usergroup(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     member_list = subMethod.get_member()['members']
@@ -83,7 +83,7 @@ def create_usergroup(message, usergroup_name, member):
     member_id = []
     data['usergroup_name'] = usergroup_name
     try:
-        member_name = member.split(',')
+        member_name = [x.strip() for x in member.split(',')]
     except AttributeError:
         member_name = []
         member_id = member
@@ -125,7 +125,7 @@ def prune_usergroup(message, usergroup_name, member):
     [prune_list.extend(usergroup['member']) for usergroup in usergroups if usergroup['usergroup_name'] in prune_group_list]
     delete_member(message, usergroup_name, prune_list)
 
-@respond_to('add\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('add\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def add_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
@@ -134,9 +134,10 @@ def add_member(message, usergroup_name, member):
         return
     member_list = subMethod.get_member()['members']
     usergroup_member = subMethod.get_usergroup_member(usergroup_name)
+
     member_id = []
     try:
-        member_name = member.split(',')
+        member_name = [x.strip() for x in member.split(',')]
     except AttributeError:
         member_name = []
         member_id = member
@@ -170,7 +171,7 @@ def add_member(message, usergroup_name, member):
     subMethod.set_usergroup_list(usergroup)
     message.send('Added some member')
 
-@respond_to('delete\s([a-zA-Z0-9]*)\s([a-zA-Z0-9,]*)')
+@respond_to('delete\s([a-zA-Z0-9]*)\s([\w\s,]+)')
 def delete_member(message, usergroup_name, member):
     usergroup = subMethod.get_usergroup_list()
     usergroup_name_list = [usergroup_dict['usergroup_name'] for usergroup_dict in usergroup]
@@ -180,7 +181,7 @@ def delete_member(message, usergroup_name, member):
     member_list = subMethod.get_member()['members']
     member_id = []
     try:
-        member_name = member.split(',')
+        member_name = [x.strip() for x in member.split(',')]
     except AttributeError:
         member_name = []
         member_id = member
