@@ -266,6 +266,15 @@ def show_usergroup_member(message, usergroup_name):
             break
     message.send(sentence)
 
+@respond_to('absent\s([\s\S]+)')
+def absent(message, reason):
+    template = reason.split()
+    if len(template) < 3:
+        message.direct_reply('few argument')
+        return
+    subMethod.send_message('absent', template[0] + ' ' + template[1] + 'です.\n' + template[2] + 'のため本日の活動を欠席します.\n')
+   
+
 @respond_to('help')
 def show_help_message(message):
     message.send('You can use these commands.\n'\

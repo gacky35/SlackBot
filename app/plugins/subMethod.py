@@ -68,3 +68,6 @@ def userid_to_username(member_list, member_id):
             if ml['id'] == mi:
                 member_name.append(ml['profile']['display_name'])
     return member_name
+
+def send_message(channel, text):
+    client.chat_postMessage(channel=channel, text=text)
